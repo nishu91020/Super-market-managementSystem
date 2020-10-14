@@ -5,6 +5,7 @@ class item{
 	string product_id;
 	string product_name;
 	float price,discount_percentage;
+	public:
 	void product_input()
 	{
 		cout<<"enter product id"<<"\n";
@@ -28,15 +29,15 @@ class item{
 		
 	}
 	string get_product_name(){
-		return product_id;
+		return product_name;
 		
 	}
 	float get_price(){
-		return product_id;
+		return price;
 		
 	}
-	float get_product_id(){
-		return product_id;
+	float prod_discount(){
+		return discount_percentage;
 		
 	}
 	
@@ -46,7 +47,7 @@ class item{
 	{
 		fstream f;
 	
-		f.open("items.txt",iso::out|ios::append);
+		f.open("items.txt",ios::out|ios::app);
 		it1.product_input();
 		f.write((char*)&it1,sizeof(it1));
 		f.close();
@@ -58,13 +59,13 @@ class item{
 		cout<<"please enter the product code"<<"\n";
 		cin>>num;
 		fstream f;
-		f.open("items.txt",ios::in|iso::out);
+		f.open("items.txt",ios::in|ios::out);
 		fstream f1;
-		f.open("copy.txt",ios::in|iso::out);
-		fp.seekg(0,ios::beg);
-		while(fp.read((char*)&produc,sizeof(product)))
+		f.open("copy.txt",ios::in|ios::out);
+		f.seekg(0,ios::beg);
+		while(f.read((char*)&it1,sizeof(it1)))
 		{
-			if(it1.product_id!=num)
+			if(it1.get_product_id()!=num)
 			f1.write((char*)&it1,sizeof(it1));
 		}
 		f.close();
@@ -79,7 +80,7 @@ class item{
 		bool found=false;
 		
 		fstream f;
-		f.open("items.txt",ios::in|iso::out);
+		f.open("items.txt",ios::in|ios::out);
 		while(f.read((char*)&it1,sizeof(it1)) && found==false)
 		{
 			it1.display();
@@ -95,13 +96,57 @@ class item{
 		if(found==false)
 		cout<<"record not found"<<"\n";
 	}
+	void add_item_shop()
+	{
+		string name;
+		cout<<"enter the name of product"<<"\n";
+		cin>>name;
+		cout<<"enter the quantity"<<"\n";
+		bool found=false;
+		fstream f,f1;
+		f.open("items.txt",ios::in|ios::out);
+		f1.open("bill.txt",ios::in|ios::out|ios::app);
+		while(found==false && f.read((char*)&it1,sizeof(it1)))
+		{
+			if(name==it1.get_product_name())
+			{
+				int pos=-1*sizeof(it1);
+				f.seekp(pos,ios::cur);
+				f.read((char*)&it1,sizeof(it1));
+				f1.write((char*)&it1,sizeof(it1));
+			}
+		}
+	}
+	void delete_item_shop()
+	{
+		string name;
+		cout<<"please enter the product code"<<"\n";
+		cin>>name;
+		fstream f;
+		f.open("bill.txt",ios::in|ios::out);
+		fstream f1;
+		f.open("copy.txt",ios::in|ios::out);
+		f.seekg(0,ios::beg);
+		while(f.read((char*)&it1,sizeof(it1)))
+		{
+			if(it1.get_product_name()!=name)
+			f1.write((char*)&it1,sizeof(it1));
+		}
+		f.close();
+		f1.close();
+		remove("items.txt");
+		rename("copy.txt","items.txt");
+		cout<<"record with product id"<<" "<<name<<"deleted"<<"\n";
+	}
 int main()
 {
+	int ans;
 	while(ans==1)
 	{
 		string ch;
 		cout<<"you are a vendor or customer"<<"\n";
 		cin>>ch;
+		int k;
 		if(ch=="vendor")
 		{
 			do{	int k;
@@ -134,6 +179,7 @@ int main()
 				cout<<"1.see all the available items"<<"\n";
 				cout<<"2.add an item to shopping list"<<"\n";
 				cout<<"3.delete an item from shopping list"<<"\n";
+				cout<<"4.display bill"<<"\n";
 				cout<<"0.exit"<<"\n";
 				cin>>c_ch;
 				switch(c_ch)
