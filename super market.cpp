@@ -4,7 +4,8 @@ using namespace std;
 class item{
 	string product_id;
 	string product_name;
-	float price,discount_percentage;
+	float price,discount_percentage,net_price;
+	
 	public:
 	void product_input()
 	{
@@ -86,8 +87,7 @@ class item{
 			it1.display();
 			cout<<"\nPlease Enter The New Details of Product: "<<"\n";
 			it1.product_input();
-			int pos=-1*sizeof(it1);
-			f.seekp(pos,ios::cur);
+			f.seekg(-1*sizeof(it1),ios::cur);
 			f.write((char*)&it1,sizeof(it1));
 			cout<<" Record Successfully Updated..."<<"\n";
 			found=true;
@@ -100,27 +100,30 @@ class item{
 	{
 		string name;
 		cout<<"enter the name of product"<<"\n";
-		cin>>name;
-		cout<<"enter the quantity"<<"\n";
+			cin>>name;
 		bool found=false;
 		fstream f,f1;
 		f.open("items.txt",ios::in|ios::out);
 		f1.open("bill.txt",ios::in|ios::out|ios::app);
 		while(found==false && f.read((char*)&it1,sizeof(it1)))
 		{
+			f.read((char*)&it1,sizeof(it1));
 			if(name==it1.get_product_name())
 			{
-				int pos=-1*sizeof(it1);
-				f.seekp(pos,ios::cur);
-				f.read((char*)&it1,sizeof(it1));
+			
+				
 				f1.write((char*)&it1,sizeof(it1));
 			}
 		}
+		if(found==false)
+			cout<<"item out of stock"<<"\n";
+		f.close();
+		f1.close();
 	}
 	void delete_item_shop()
 	{
 		string name;
-		cout<<"please enter the product code"<<"\n";
+		cout<<"please enter the product name"<<"\n";
 		cin>>name;
 		fstream f;
 		f.open("bill.txt",ios::in|ios::out);
@@ -134,13 +137,13 @@ class item{
 		}
 		f.close();
 		f1.close();
-		remove("items.txt");
-		rename("copy.txt","items.txt");
-		cout<<"record with product id"<<" "<<name<<"deleted"<<"\n";
+		remove("bill.txt");
+		rename("copy.txt","bill.txt");
+		cout<<"record with name"<<" "<<name<<"deleted"<<"\n";
 	}
 int main()
 {
-	int ans;
+	int ans=1;
 	while(ans==1)
 	{
 		string ch;
@@ -186,8 +189,13 @@ int main()
 				{
 					case 1:it1.display();
 						 break;
-					case 2:add_item_shop();
+					case 2:	{
+							int qty;
+							cout<<"enter the quantity"<<"\n";
+							cin>>qty;
+							add_item_shop();
 							break;
+						}
 					case 3:delete_item_shop();
 							break;
 					default:cout<<"invalid choice"<<"\n";
