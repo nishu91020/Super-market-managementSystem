@@ -1,212 +1,318 @@
-//this is a program for generating bills using file handling.
-#include<bits/stdc++.h>
+#include<fstream>
+#include<conio.h>
+#include<string.h>
+#include<iomanip>
+#include<iostream>
+ 
+ 
 using namespace std;
-class item{
-	string product_id;
-	string product_name;
-	float price,discount_percentage,net_price;
+ 
+class product
+{
+	int product_number;
+	char product_name[50];
+	float product_price,product_quantity,tax,product_discount;
 	
 	public:
-	void product_input()
+ 
+	void create_product()
 	{
-		cout<<"enter product id"<<"\n";
-		cin>>product_id;
-		cout<<"enter product name"<<"\n";
-		cin>>product_name;
-		cout<<"enter price of product"<<"\n";
-		cin>>price;
-		cout<<"enter discount"<<"\n";
-		cin>>discount_percentage;
-		}
-	void display()
+		cout<<endl<<"Enter The Product Number: ";
+		cin>>product_number;
+		cout<<endl<<"Enter The Name of The Product: ";
+		cin.ignore();
+		cin.getline(product_name ,50);
+		cout<<endl<<"Enter The Price of The Product: ";
+		cin>>product_price;
+		cout<<endl<<"Enter The Discount (%): ";
+		cin>>product_discount;
+	}
+	
+	void show_product()
 	{
-		cout<<" product id is"<<" "<<product_id<<"\n";
-		cout<<" product name is"<<" "<<product_name<<"\n";
-		cout<<" price of product is"<<" "<<price<<"\n";
-		cout<<" discount is"<<" "<<discount_percentage<<"\n";
+		cout<<endl<<"Product Number: "<<product_number;
+		cout<<endl<<"Product Name: "<<product_name;
+		cout<<endl<<"Product Price: "<<product_price;
+		cout<<endl<<"Discount : "<<product_discount;
 	}
-	string get_product_id(){
-		return product_id;
-		
+	
+	int getProduct()
+	{
+		return product_number;
 	}
-	string get_product_name(){
+	
+	float getPrice()
+	{
+		return product_price;
+	}
+	
+	char* getName()
+	{
 		return product_name;
-		
-	}
-	float get_price(){
-		return price;
-		
-	}
-	float prod_discount(){
-		return discount_percentage;
-		
 	}
 	
-};
-	item it1;
-	void add_item()
+	float getDiscount()
 	{
-		fstream f;
-	
-		f.open("items.txt",ios::out|ios::app);
-		it1.product_input();
-		f.write((char*)&it1,sizeof(it1));
-		f.close();
-		cout<<"item created successfully!!!"<<"\n";
+		return product_discount;
 	}
-	void delete_item()
+}; 
+ 
+ 
+ 
+fstream fp;
+product pro;
+ 
+ 
+void save_product()
+{
+	fp.open("database.dat",ios::out|ios::app);
+	pro.create_product();
+	fp.write((char*)&pro,sizeof(product));
+	fp.close();
+	cout<<endl<<endl<<"The Product Has Been Sucessfully Created...";
+	getchar();
+}
+ 
+ 
+void show_all_product()
+{
+	system("cls");
+	cout<<endl<<"\t\t-------------------------------------------";
+	cout<<endl<<"\t\tRECORDS.";
+	cout<<endl<<"\t\t------------------------------------------\n";
+	fp.open("database.dat",ios::in);
+	while(fp.read((char*)&pro,sizeof(product)))
 	{
-		string num;
-		cout<<"please enter the product code"<<"\n";
-		cin>>num;
-		fstream f;
-		f.open("items.txt",ios::in|ios::out);
-		fstream f1;
-		f.open("copy.txt",ios::in|ios::out);
-		f.seekg(0,ios::beg);
-		while(f.read((char*)&it1,sizeof(it1)))
-		{
-			if(it1.get_product_id()!=num)
-			f1.write((char*)&it1,sizeof(it1));
-		}
-		f.close();
-		f1.close();
-		remove("items.txt");
-		rename("copy.txt","items.txt");
-		cout<<"record with product id"<<" "<<num<<"deleted"<<"\n";
+		pro.show_product();
+		cout<<endl<<"------------------------------------------\n"<<endl;
+		getchar();
 	}
-	void modify_p()
+	fp.close();
+}
+ 
+ 
+void display_record(int num)
+{
+	bool found=false;
+	fp.open("database.dat",ios::in);
+	while(fp.read((char*)&pro,sizeof(product)))
 	{
-		string num;
-		bool found=false;
-		
-		fstream f;
-		f.open("items.txt",ios::in|ios::out);
-		while(f.read((char*)&it1,sizeof(it1)) && found==false)
+		if(pro.getProduct()==num)
 		{
-			it1.display();
-			cout<<"\nPlease Enter The New Details of Product: "<<"\n";
-			it1.product_input();
-			f.seekg(-1*sizeof(it1),ios::cur);
-			f.write((char*)&it1,sizeof(it1));
-			cout<<" Record Successfully Updated..."<<"\n";
+			system("cls");
+			pro.show_product();
 			found=true;
 		}
-		f.close();
-		if(found==false)
-		cout<<"record not found"<<"\n";
 	}
-	void add_item_shop()
-	{
-		string name;
-		cout<<"enter the name of product"<<"\n";
-			cin>>name;
-		bool found=false;
-		fstream f,f1;
-		f.open("items.txt",ios::in|ios::out);
-		f1.open("bill.txt",ios::in|ios::out|ios::app);
-		while(found==false && f.read((char*)&it1,sizeof(it1)))
-		{
-			f.read((char*)&it1,sizeof(it1));
-			if(name==it1.get_product_name())
-			{
-			
-				
-				f1.write((char*)&it1,sizeof(it1));
-			}
-		}
-		if(found==false)
-			cout<<"item out of stock"<<"\n";
-		f.close();
-		f1.close();
-	}
-	void delete_item_shop()
-	{
-		string name;
-		cout<<"please enter the product name"<<"\n";
-		cin>>name;
-		fstream f;
-		f.open("bill.txt",ios::in|ios::out);
-		fstream f1;
-		f.open("copy.txt",ios::in|ios::out);
-		f.seekg(0,ios::beg);
-		while(f.read((char*)&it1,sizeof(it1)))
-		{
-			if(it1.get_product_name()!=name)
-			f1.write((char*)&it1,sizeof(it1));
-		}
-		f.close();
-		f1.close();
-		remove("bill.txt");
-		rename("copy.txt","bill.txt");
-		cout<<"record with name"<<" "<<name<<"deleted"<<"\n";
-	}
-int main()
+	
+	fp.close();
+	if(found == true)
+	cout<<"\n\nNo record found";
+	getchar();
+}
+ 
+ 
+ 
+void edit_product()
 {
-	int ans=1;
-	while(ans==1)
+	int num;
+	bool found=false;
+	system("cls");
+	cout<<endl<<endl<<"\tPlease Enter The Product #: ";
+	cin>>num;
+	
+	fp.open("database.dat",ios::in|ios::out);
+	while(fp.read((char*)&pro,sizeof(product)) && found==false)
 	{
-		string ch;
-		cout<<"you are a vendor or customer"<<"\n";
+		if(pro.getProduct()==num)
+		{
+			pro.show_product();
+			cout<<"\nPlease Enter The New Details of Product: "<<endl;
+			pro.create_product();
+			int pos=-1*sizeof(pro);
+			fp.seekp(pos,ios::cur);
+			fp.write((char*)&pro,sizeof(product));
+			cout<<endl<<endl<<"\t Record Successfully Updated...";
+			found=true;
+		}
+	}
+	fp.close();
+	if(found==false)
+		cout<<endl<<endl<<"Record Not Found...";
+	getchar();
+}
+ 
+ 
+void delete_product()
+{
+	int num;
+	system("cls");
+	cout<<endl<<endl<<"Please Enter The product #: ";
+	cin>>num;
+	fp.open("database.dat",ios::in|ios::out);
+	fstream fp2;
+	fp2.open("Temp.dat",ios::out);
+	fp.seekg(0,ios::beg);
+	while(fp.read((char*)&pro,sizeof(product)))
+	{
+		if(pro.getProduct()!=num)
+		{
+			fp2.write((char*)&pro,sizeof(product));
+		}
+	}
+	fp2.close();
+	fp.close();
+	remove("database.dat");
+	rename("Temp.dat","database.dat");
+	cout<<endl<<endl<<"\tRecord Deleted...";
+	getchar();
+}
+ 
+ 
+void product_menu()
+{
+	system("cls");
+	fp.open("database.dat",ios::in);
+ 
+	cout<<endl<<endl<<"\t\tProduct MENU\n\n";
+	cout<<"-----------------------------------------------------\n";
+	cout<<"P.NO.\t\tNAME\t\tPRICE\n";
+	cout<<"-----------------------------------------------------\n";
+	while(fp.read((char*)&pro,sizeof(product)))
+	{
+		cout<<pro.getProduct()<<"\t\t"<<pro.getName()<<"\t\t"<<pro.getPrice()<<endl;
+	}
+	fp.close();
+}
+ 
+ 
+ 
+void place_order()
+{
+	int order_arr[50],quan[50],c=0;
+	float amt,damt,total=0;
+	char ch='Y';
+	product_menu();
+	cout<<"\n------------------------------------------------";
+	cout<<"\n PLACE YOUR ORDER";
+	cout<<"\n------------------------------------------------\n";
+	do{
+		cout<<"\n\nEnter The Product number: ";
+		cin>>order_arr[c];
+		cout<<"\nQuantity: ";
+		cin>>quan[c];
+		c++;
+		cout<<"\nDo You Want To Order Another Product ? (y/n)";
 		cin>>ch;
-		int k;
-		if(ch=="vendor")
-		{
-			do{	int k;
-				int v_ch;
-				cout<<"1.add an item to the list"<<"\n";
-				cout<<"2.delete an ite from stock"<<"\n";
-				cout<<"3.clear all data"<<"\n";
-				cout<<"0.exit"<<"\n";
-				cin>>v_ch;
-				switch(v_ch)
-				{
-					case 1:add_item();
-							break;
-					case 2:delete_item();
-							break;
-					case 3:modify_p();
-							break;
-					default:cout<<"invalid choice"<<"\n";
-							break; 
-				}
-				cout<<"want to perform one more operation?"<<"\n";
-				cin>>k;
-			}while(k!=0);
+		}while(ch=='y' ||ch=='Y');
+	cout<<"\n\nThank You...";
+	getchar();
+	system("cls");
+	cout<<"\n\n--------------INVOICE-----------------------\n";
+	cout<<"\nPr No.\tPr Name\tQuantity \tPrice \tAmount \tAmount after discount\n";
+	for(int x=0;x<=c;x++)
+	{
+		fp.open("database.dat",ios::in);
+		fp.read((char*)&pro,sizeof(product));
+		while(!fp.eof())
+		{	
+			if(pro.getProduct()==order_arr[x])
+			{
+				amt=pro.getPrice()*quan[x];
+				damt=amt-(amt*pro.getDiscount()/100);
+				cout<<"\n"<<order_arr[x]<<"\t"<<pro.getName()<<"\t"<<quan[x]<<"\t\t"<<pro.getPrice()<<"\t"<<amt<<"\t\t"<<damt;
+				total+=damt;
+			}
+			fp.read((char*)&pro,sizeof(product));
 		}
-		if(ch=="customer")
+		fp.close();
+	}
+	cout<<"\n\n\t\t\t\t\tTOTAL = "<<total;
+	getchar();
+}
+ 
+ 
+ 
+void admin_menu()
+{
+	system("cls");
+	int option;
+	cout<<"\t------------------------------------------";
+	cout<<"\n\tPress 1 to CREATE PRODUCT";
+	cout<<"\n\tPress 2 to DISPLAY ALL PRODUCTS";
+	cout<<"\n\tPress 3 to QUERY ";
+	cout<<"\n\tPress 4 to MODIFY PRODUCT";
+	cout<<"\n\tPress 5 to DELETE PRODUCT";
+	cout<<"\n\tPress 6 to GO BACK TO MAIN MENU";
+	cout<<"\n\t-----------------------------------------";
+ 
+	cout<<"\n\n\tOption: ";
+	cin>>option;
+	switch(option)
+	{
+		case 1: system("cls");
+				save_product();
+				break;
+				
+		case 2: show_all_product();
+				break;
+				
+		case 3:
+				int num;
+				system("cls");
+				cout<<"\n\n\tPlease Enter The Product Number: ";
+				cin>>num;
+				display_record(num);
+				break;
+				
+		case 4: edit_product();
+		break;
+		
+		case 5: delete_product();
+		        break;
+				
+		case 6: system("cls");
+				break;
+		
+		default:admin_menu();
+	}
+}
+ 
+ 
+int main(int argc, char *argv[])
+{
+	system("cls");
+	int option;
+	for(;;)
+	{
+ 
+		cout<<"\n\t------------------------------------";
+		cout<<"\n\t1. CUSTOMER";
+		cout<<"\n\t2. ADMINISTRATOR";
+		cout<<"\n\t3. EXIT";
+		cout<<"\n\t------------------------------------";
+		
+		cout<<"\n\tOption: ";
+		cin>>option;
+		
+		switch(option)
 		{
-			do{
-				int k;
-				int c_ch;
-				cout<<"1.see all the available items"<<"\n";
-				cout<<"2.add an item to shopping list"<<"\n";
-				cout<<"3.delete an item from shopping list"<<"\n";
-				cout<<"4.display bill"<<"\n";
-				cout<<"0.exit"<<"\n";
-				cin>>c_ch;
-				switch(c_ch)
-				{
-					case 1:it1.display();
-						 break;
-					case 2:	{
-							int qty;
-							cout<<"enter the quantity"<<"\n";
-							cin>>qty;
-							add_item_shop();
-							break;
-						}
-					case 3:delete_item_shop();
-							break;
-					default:cout<<"invalid choice"<<"\n";
-							break; 
-				}
-				cout<<"want to perform one more operation?"<<"\n";
-				cin>>k;
-			}while(k!=0);
+			case 1: system("cls");
+					place_order();
+					getchar();
+					break;
+					
+			case 2: admin_menu();
+					break;
+					
+			case 3: 
+					cout<<"\n\t------------------------------------------";
+					cout<<"\n\tGood Bye!";
+					cout<<"\n\t------------------------------------------\n";
+					exit(0);
+			
+			default :cout<<"Invalid Input...\n";
 		}
-		cout<<"once more?"<<"\n";
-		cin>>ans;
-	}	
-	return 0;
+ 
+	}
 }
