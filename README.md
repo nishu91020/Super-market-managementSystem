@@ -4,12 +4,14 @@
  </div>
 This project generates an online bill according to the items chosen by customer based on the items inserted in the feed by administrator.
 <h3>Main menu</h3>
+<p>--------------------------------------------------------------------------------------------------------------------------------------</p>
 <ul>
   <li>Customer</li>
   <li>Administrator</li>
   <li>Exit</li>
  </ul>
  <h3>Admin Menu</h3>
+ <p>--------------------------------------------------------------------------------------------------------------------------------------</p>
  <ol>
  <li> CREATE PRODUCT</li>
 <li>DISPLAY ALL PRODUCTS</li>
