@@ -1,5 +1,7 @@
 # Super-market-managementSystem
-<img text-align="center" src="download.png" alt=" ">
+<div  text-align="center" >
+<img src="download.png" alt=" ">
+ </div>
 This project generates an online bill according to the items chosen by customer based on the items inserted in the feed by administrator.
 <h3>Main menu</h3>
 <ul>
