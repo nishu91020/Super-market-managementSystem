@@ -15,3 +15,8 @@ This project generates an online bill according to the items chosen by customer 
 <li>DELETE PRODUCT</li>
 <li>GO BACK TO MAIN MENU</li>
   <ol>
+<h3>Customer Features</h3>
+    <ul>
+      <li>Add item to bill</li>
+      <li>Get tax invoice</li>
+    </ul>
