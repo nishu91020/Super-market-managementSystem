@@ -23,3 +23,4 @@ This project generates an online bill according to the items chosen by customer 
     <li>Add item to bill</li>
     <li>Get tax invoice</li>
   </ul>
+   <p>Made By-Nishu Rai</p>
