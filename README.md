@@ -6,12 +6,12 @@ This project generates an online bill according to the items chosen by customer 
   <li>Administrator</li>
   <li>Exit</li>
  </ul>
- <h3>Addmin Menu</h3>
+ <h3>Admin Menu</h3>
  <ol>
- <li>Press 1 to CREATE PRODUCT</li>
-<li>Press 2 to DISPLAY ALL PRODUCTS</li>
-<li>Press 3 to QUERY</li>
-<li>Press 4 to MODIFY PRODUCT</li>
-<li>Press 5 to DELETE PRODUCT</li>
-<li>Press 6 to GO BACK TO MAIN MENU</li>
+ <li> CREATE PRODUCT</li>
+<li>DISPLAY ALL PRODUCTS</li>
+<li>QUERY</li>
+<li>MODIFY PRODUCT</li>
+<li>DELETE PRODUCT</li>
+<li>GO BACK TO MAIN MENU</li>
   <ol>
